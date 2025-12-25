@@ -1465,7 +1465,7 @@
         const counterKey = 'unique-visits';
 
         async function trackVisit() {
-            const hasVisited = localStorage.getItem('hasVisitedPortfolio');
+            const hasVisited = localStorage.getItem('hasVisitedPortfolio_v2');
             if (!hasVisited) {
                 try {
                     await fetch(`https://api.counterapi.dev/v1/${counterNamespace}/${counterKey}/up`);
@@ -1482,6 +1482,7 @@
 </body>
 
 </html>
+
 
 
 
