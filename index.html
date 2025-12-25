@@ -1,0 +1,1483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Akash Bondre | Data Analyst</title>
+    <meta name="description" content="Portfolio of Akash Bondre, a Data Analyst specializing in decision-driven analytics, product growth, and business intelligence.">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-deep: #000000;
+            --bg-surface: #0a0a0f;
+            --bg-elevated: #12121a;
+            --accent-primary: #00f0ff;
+            --accent-secondary: #6b00ff;
+            --accent-tertiary: #ff006e;
+            --text-main: #ffffff;
+            --text-muted: #8a8a9f;
+            --text-dim: #505060;
+            --glass: rgba(255, 255, 255, 0.02);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --neon-glow-primary: 0 0 30px rgba(0, 240, 255, 0.3);
+            --neon-glow-secondary: 0 0 40px rgba(107, 0, 255, 0.2);
+            --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+            cursor: none;
+        }
+
+        /* CUSTOM CURSOR */
+        #cursor {
+            width: 10px;
+            height: 10px;
+            background: var(--accent-primary);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.1s, background 0.3s;
+            mix-blend-mode: difference;
+        }
+        
+        #cursor-follower {
+            width: 40px;
+            height: 40px;
+            border: 2px solid var(--accent-primary);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9998;
+            transition: all 0.15s ease-out;
+            opacity: 0.6;
+        }
+
+        /* ANIMATED BACKGROUND */
+        .grid-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -1;
+            opacity: 0.4;
+            animation: gridPulse 8s ease-in-out infinite;
+        }
+
+        @keyframes gridPulse {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 0.2; }
+        }
+
+        .gradient-orb {
+            position: fixed;
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(107, 0, 255, 0.15) 0%, transparent 70%);
+            top: -300px;
+            right: -300px;
+            z-index: -1;
+            filter: blur(100px);
+            animation: orbFloat 20s ease-in-out infinite;
+        }
+
+        .gradient-orb-2 {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(0, 240, 255, 0.1) 0%, transparent 70%);
+            bottom: -200px;
+            left: -200px;
+            z-index: -1;
+            filter: blur(100px);
+            animation: orbFloat 15s ease-in-out infinite reverse;
+        }
+
+        @keyframes orbFloat {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(50px, 50px) scale(1.1); }
+        }
+
+        /* NAVIGATION - HUD STYLE */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 90px;
+            padding: 0;
+            z-index: 1000;
+            background: rgba(5, 5, 10, 0.85); /* Darker for high contrast with grid */
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            overflow: hidden;
+        }
+
+        /* Canvas for Hex Grid */
+        #nav-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .nav-content {
+            height: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 2; 
+        }
+
+        .logo {
+            font-weight: 900;
+            font-size: 1.3rem;
+            letter-spacing: -1px;
+            text-decoration: none;
+            color: var(--text-main);
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            border: 2px solid rgba(0, 240, 255, 0.3);
+            padding: 6px 16px;
+            border-radius: 2px; /* Sharper corners for tech look */
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.3), transparent);
+            transition: 0.5s;
+        }
+
+        .logo:hover::before {
+            left: 100%;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2.5rem;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px; left: 0;
+            width: 0; height: 2px;
+            background: var(--accent-primary);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-primary);
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* HERO SECTION */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 130px 3rem 0;
+            position: relative;
+        }
+
+        .hero-tag {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent-primary);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin-bottom: 1.5rem;
+            display: inline-block;
+            padding: 8px 16px;
+            background: rgba(0, 240, 255, 0.05);
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            border-radius: 4px;
+            animation: fadeSlideIn 0.8s ease-out;
+        }
+
+        @keyframes fadeSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero h1 {
+            font-size: clamp(3.5rem, 9vw, 7rem);
+            font-weight: 900;
+            line-height: 0.95;
+            margin-bottom: 2rem;
+            letter-spacing: -3px;
+            animation: fadeSlideIn 0.8s ease-out 0.2s backwards;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 50%, var(--accent-tertiary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% auto;
+            animation: gradientShift 4s ease infinite, fadeSlideIn 0.8s ease-out 0.2s backwards;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .hero-description {
+            font-size: 1.35rem;
+            color: var(--text-muted);
+            max-width: 700px;
+            margin-bottom: 3rem;
+            line-height: 1.8;
+            animation: fadeSlideIn 0.8s ease-out 0.4s backwards;
+        }
+
+        .cta-group {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 4rem;
+            animation: fadeSlideIn 0.8s ease-out 0.6s backwards;
+        }
+
+        .btn-primary, .btn-secondary {
+            padding: 1.2rem 2.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: var(--bg-deep);
+            border: none;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: 0.5s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--neon-glow-primary);
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-main);
+            border: 2px solid var(--glass-border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent-primary);
+            background: rgba(0, 240, 255, 0.05);
+            transform: translateY(-3px);
+        }
+
+        .hero-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 2.5rem;
+            animation: fadeSlideIn 0.8s ease-out 0.8s backwards;
+        }
+
+        .metric-item {
+            position: relative;
+            padding: 1.5rem;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            transition: var(--transition);
+        }
+
+        .metric-item:hover {
+            background: rgba(0, 240, 255, 0.03);
+            border-color: var(--accent-primary);
+            transform: translateY(-5px);
+        }
+
+        .metric-value {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--accent-primary);
+            display: inline-block; 
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: block; 
+        }
+
+        /* SECTION STYLING */
+        section {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 120px 3rem;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-header {
+            margin-bottom: 4rem;
+        }
+
+        .section-tag {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent-secondary);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            display: block;
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+            letter-spacing: -2px;
+        }
+
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            max-width: 700px;
+        }
+
+        /* SKILLS GRID */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        .skill-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--glass-border);
+            padding: 3rem;
+            border-radius: 16px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .skill-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 3px;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            transform: scaleX(0);
+            transition: transform 0.4s;
+        }
+
+        .skill-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .skill-card:hover {
+            border-color: var(--accent-primary);
+            transform: translateY(-10px);
+            box-shadow: var(--neon-glow-primary);
+            background: var(--bg-elevated);
+        }
+
+        .skill-icon {
+            font-size: 2.5rem;
+            color: var(--accent-primary);
+            margin-bottom: 1.5rem;
+            display: inline-block;
+            transition: 0.4s;
+        }
+
+        .skill-card:hover .skill-icon {
+            transform: scale(1.1) rotateY(180deg);
+        }
+
+        .skill-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            margin-top: 1.5rem;
+        }
+
+        .tag {
+            font-size: 0.7rem;
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(0, 240, 255, 0.05);
+            padding: 6px 12px;
+            border-radius: 6px;
+            color: var(--text-muted);
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            transition: 0.3s;
+        }
+
+        .tag:hover {
+            background: rgba(0, 240, 255, 0.1);
+            color: var(--accent-primary);
+            border-color: var(--accent-primary);
+        }
+
+        /* CERTIFICATES */
+        .cert-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .cert-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--bg-surface);
+            padding: 2rem 2.5rem;
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+            border-left: 4px solid var(--accent-secondary);
+            transition: var(--transition);
+            text-decoration: none;
+            color: inherit;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cert-item::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0;
+            width: 4px; height: 0;
+            background: var(--accent-primary);
+            transition: height 0.4s;
+        }
+
+        .cert-item:hover::before {
+            height: 100%;
+        }
+
+        .cert-item:hover {
+            border-color: var(--accent-primary);
+            background: var(--bg-elevated);
+            transform: translateX(15px);
+            box-shadow: var(--neon-glow-secondary);
+        }
+
+        .cert-info h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .cert-info span {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .cert-icon {
+            color: var(--accent-primary);
+            font-size: 1.5rem;
+            transition: 0.3s;
+        }
+
+        .cert-item:hover .cert-icon {
+            transform: translateX(5px);
+        }
+
+        /* FEATURED PROJECT */
+        .featured-project {
+            background: var(--bg-surface);
+            border: 2px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 5rem;
+            position: relative;
+            overflow: hidden;
+            border-top: 4px solid var(--accent-primary);
+        }
+
+        .featured-badge {
+            position: absolute;
+            top: 2.5rem; right: -3rem;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: var(--bg-deep);
+            padding: 0.6rem 4rem;
+            transform: rotate(45deg);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            box-shadow: 0 4px 20px rgba(0, 240, 255, 0.3);
+        }
+
+        .featured-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5rem;
+        }
+
+        .featured-details h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            line-height: 1.2;
+        }
+
+        .process-step {
+            margin-bottom: 2.5rem;
+            padding-left: 2rem;
+            border-left: 2px solid var(--glass-border);
+            transition: 0.3s;
+        }
+
+        .process-step:hover {
+            border-color: var(--accent-primary);
+        }
+
+        .process-step h4 {
+            color: var(--accent-primary);
+            font-family: 'JetBrains Mono', monospace;
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+        }
+
+        .process-step p {
+            color: var(--text-muted);
+            line-height: 1.8;
+        }
+
+        .impact-highlight {
+            background: rgba(0, 240, 255, 0.05);
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            border-left: 4px solid var(--accent-primary);
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+        }
+
+        .impact-highlight small {
+            display: block;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            color: var(--accent-primary);
+            margin-bottom: 0.75rem;
+            font-weight: 700;
+        }
+
+        .impact-highlight h3 {
+            font-size: 2rem;
+            color: var(--accent-primary);
+            font-weight: 900;
+        }
+
+        /* PROJECTS GRID */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .project-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: var(--transition);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .project-card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, rgba(0, 240, 255, 0.05), rgba(107, 0, 255, 0.05));
+            opacity: 0;
+            transition: 0.4s;
+            pointer-events: none;
+        }
+
+        .project-card:hover::after {
+            opacity: 1;
+        }
+
+        .project-card:hover {
+            border-color: var(--accent-secondary);
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(107, 0, 255, 0.2);
+        }
+
+        .project-content {
+            padding: 2.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .project-meta {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--accent-secondary);
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .project-card h3 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .project-card p {
+            color: var(--text-muted);
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .project-impact {
+            background: rgba(107, 0, 255, 0.05);
+            border-left: 3px solid var(--accent-secondary);
+            padding: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .project-impact small {
+            display: block;
+            text-transform: uppercase;
+            font-size: 0.65rem;
+            letter-spacing: 1px;
+            color: var(--accent-secondary);
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .project-links {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: auto;
+        }
+
+        .project-link {
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            transition: 0.3s;
+        }
+
+        .project-link:hover {
+            color: var(--accent-primary);
+            transform: translateX(5px);
+        }
+
+        /* CONTACT SECTION */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5rem;
+        }
+
+        .contact-info h2 {
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .contact-info p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .social-link {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-main);
+            font-size: 1.3rem;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .social-link:hover {
+            background: var(--accent-primary);
+            color: var(--bg-deep);
+            border-color: var(--accent-primary);
+            transform: translateY(-5px);
+            box-shadow: var(--neon-glow-primary);
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        input, textarea {
+            background: var(--bg-elevated);
+            border: 1px solid var(--glass-border);
+            padding: 1.3rem;
+            color: var(--text-main);
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: var(--transition);
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            background: rgba(0, 240, 255, 0.03);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        /* FOOTER */
+        footer {
+            padding: 4rem 3rem;
+            text-align: center;
+            border-top: 1px solid var(--glass-border);
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        footer p {
+            color: var(--text-dim);
+            font-size: 0.85rem;
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: 2px;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 1200px) {
+            .featured-content, .contact-grid {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+            
+            .featured-project {
+                padding: 3rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero, section {
+                padding-left: 1.5rem;
+                padding-right: 1.5rem;
+            }
+
+            .nav-content {
+                padding: 0 1.5rem;
+            }
+
+            .hero h1 {
+                font-size: 3rem;
+            }
+
+            .cta-group {
+                flex-direction: column;
+            }
+
+            .hero-metrics {
+                grid-template-columns: 1fr;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="cursor"></div>
+    <div id="cursor-follower"></div>
+    <div class="grid-overlay"></div>
+    <div class="gradient-orb"></div>
+    <div class="gradient-orb-2"></div>
+
+    <nav>
+        <canvas id="nav-canvas"></canvas>
+
+        <div class="nav-content">
+            <a href="#" class="logo">AKASH.ANALYTICS</a>
+            <div class="nav-links">
+                <a href="#skills">Skills</a>
+                <a href="#certificates">Credentials</a>
+                <a href="#projects">Projects</a>
+                <a href="#contact">Contact</a>
+                <a href="https://github.com/akashbondre39" target="_blank"><i class="fab fa-github"></i></a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        
+        <section class="hero">
+            <span class="hero-tag">// Data Analytics & Product Intelligence</span>
+            <h1>Transforming Chaos into <span class="gradient-text">Strategic Advantage.</span></h1>
+            <p class="hero-description">I am Akash Bondre, a Data Analyst focused on building analytical systems that turn raw data into strategic advantage — blending visualization, statistics, and product thinking.</p>
+            
+            <div class="cta-group">
+                <a href="#featured" class="btn-primary">
+                    View Flagship Work
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+                <a href="#contact" class="btn-secondary">
+                    <i class="fas fa-envelope"></i>
+                    Start Conversation
+                </a>
+            </div>
+
+            <div class="hero-metrics">
+                <div class="metric-item">
+                    <span class="metric-value counter" data-target="7">0</span><span style="font-size: 2rem; color: var(--accent-primary); font-weight:900;">+</span>
+                    <span class="metric-label">Deployed Projects</span>
+                </div>
+                <div class="metric-item">
+                    <span class="metric-value counter" data-target="2">0</span><span style="font-size: 2rem; color: var(--accent-primary); font-weight:900;">M+</span>
+                    <span class="metric-label">Records Analyzed</span>
+                </div>
+                <div class="metric-item">
+                    <span class="metric-value counter" data-target="98">0</span><span style="font-size: 2rem; color: var(--accent-primary); font-weight:900;">%</span>
+                    <span class="metric-label">Model Accuracy</span>
+                </div>
+                <div class="metric-item">
+                    <span class="metric-value counter" data-target="20">0</span><span style="font-size: 2rem; color: var(--accent-primary); font-weight:900;">%</span>
+                    <span class="metric-label">Faster Time-to-Insights</span>
+                </div>
+            </div>
+        </section>
+
+        <section id="skills">
+            <div class="section-header">
+                <span class="section-tag">// Technical Arsenal</span>
+                <h2 class="section-title">Advanced <span class="gradient-text">Stack</span></h2>
+            </div>
+            <div class="skills-grid">
+                <div class="skill-card">
+                    <i class="fas fa-database skill-icon"></i>
+                    <h3>Data Analytics</h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">Building scalable and analytical frameworks</p>
+                    <div class="skill-tags">
+                        <span class="tag">SQL (PostgreSQL/BigQuery)</span>
+                        <span class="tag">Python (Pandas/NumPy)</span>
+                        <span class="tag">ETL </span>
+                        <span class="tag">Google Sheets</span>
+                        <span class="tag">Statistical Modeling</span>
+                        <span class="tag">RCA </span>
+                        <span class="tag">Trends & Insights </span>
+                    </div>
+                </div>
+                <div class="skill-card">
+                    <i class="fas fa-chart-line skill-icon"></i>
+                    <h3>Business Intelligence & Viz</h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">Transforming data into actionable visual narratives</p>
+                    <div class="skill-tags">
+                        <span class="tag">Power BI</span>
+                        <span class="tag">Tableau</span>
+                        <span class="tag">Excel (Advanced)</span>
+                        <span class="tag">Matplotlib/Seaborn</span>
+                        <span class="tag">Dashboard Design</span>
+                    </div>
+                </div>
+                <div class="skill-card">
+                    <i class="fas fa-brain skill-icon"></i>
+                    <h3>Product & Growth Analytics</h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">Data-driven product optimization and experimentation</p>
+                    <div class="skill-tags">
+                        <span class="tag">Mixpanel</span>
+                        <span class="tag">A/B Testing</span>
+                        <span class="tag">Google Analytics</span>
+                        <span class="tag">Hypothesis Testing</span>
+                        <span class="tag">Funnel Optimization</span>
+                        <span class="tag">Cohort Analysis</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="certificates">
+            <div class="section-header">
+                <span class="section-tag">// Professional Validation</span>
+                <h2 class="section-title">Verified <span class="gradient-text">Credentials</span></h2>
+            </div>
+            <div class="cert-list">
+                <a href="https://www.hackerrank.com/certificates/iframe/105fef26afa2" target="_blank" class="cert-item">
+                    <div class="cert-info">
+                        <h3>HackerRank SQL (Advanced) Certificate</h3>
+                        <span>Issued by HackerRank • Advanced Query Optimization</span>
+                    </div>
+                    <i class="fas fa-external-link-alt cert-icon"></i>
+                </a>
+                <a href="https://drive.google.com/file/d/1MCl9WY33NW5MVRnk2Vg76P9oo0_out6h/view" target="_blank" class="cert-item">
+                    <div class="cert-info">
+                        <h3>Product Analytics with Mixpanel</h3>
+                        <span>Issued by ProductSchool • Event Tracking & Experimentation</span>
+                    </div>
+                    <i class="fas fa-external-link-alt cert-icon"></i>
+                </a>
+            </div>
+        </section>
+
+        <section id="featured">
+            <div class="section-header">
+                <span class="section-tag">// Flagship Initiative</span>
+            </div>
+            <div class="featured-project">
+                <div class="featured-badge">CASE STUDY</div>
+                <div class="featured-content">
+                    <div class="featured-details">
+                        <h2>USER JOURNEY <span class="gradient-text">OPTIMIZATION</span></h2>
+                        
+                        <div class="process-step">
+                            <h4>01 // The Problem</h4>
+                            <p>B2C products often face high customer drop-off rates and undefined friction points within the sales funnel, directly affecting conversion and long-term retention.</p>
+                        </div>
+                        
+                        <div class="process-step">
+                            <h4>02 // Analytical Approach</h4>
+                            <p>Analyzed comprehensive user behavior data using Python and SQL to identify specific bottlenecks, drop-off stages, and friction points across the user journey.</p>
+                        </div>
+                        
+                        <div class="process-step">
+                            <h4>03 // Business Impact</h4>
+                            <p>Delivered actionable insights that minimized churn, optimized the user flow, and significantly boosted both conversion rates and customer retention.</p>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="impact-highlight">
+                            <small>Key Result</small>
+                            <h3>Churn Friction Minimized</h3>
+                            <p style="color: var(--text-muted); margin-top: 0.5rem;">Boosted Conversions & Retention for B2C Product</p>
+                        </div>
+
+                        <div class="impact-highlight" style="background: rgba(107, 0, 255, 0.05); border-color: rgba(107, 0, 255, 0.3);">
+                            <small style="color: var(--accent-secondary);">Tech Stack</small>
+                            <p style="color: var(--text-muted); margin: 0;">Python • SQL • Product Analytics • Data Visualization</p>
+                        </div>
+                        
+                        <a href="https://github.com/akashbondre39/User-Journey-Optimization-Reducing-Drop-Offs-Boosting-Conversions-and-Retentions-for-B2C-Product" target="_blank" class="btn-primary" style="width: 100%; justify-content: center; margin-top: 1.5rem;">
+                            <i class="fab fa-github"></i>
+                            View Repository
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="projects">
+            <div class="section-header">
+                <span class="section-tag">// Production Portfolio</span>
+                <h2 class="section-title">Recent <span class="gradient-text">Deployments</span></h2>
+                <p class="section-subtitle">Analytical solutions delivering measurable business outcomes</p>
+            </div>
+            <div class="projects-grid">
+                
+                <div class="project-card">
+                    <div class="project-content">
+                        <span class="project-meta">SQL • Power BI • Forecasting</span>
+                        <h3>E-Commerce Platform Analysis</h3>
+                        <p>End-to-end data analysis of $2.19M sales data, driving visibility on revenue growth, margin erosion, and inventory optimization.</p>
+                        <div class="project-impact">
+                            <small>Business Value</small>
+                            <strong>Audited $2.19M Sales & Identified Profit Leaks</strong>
+                        </div>
+                        <div class="project-links">
+                            <a href="https://akashbondre39.github.io/Beauty-Skincare-Co.---E-Commerce-Platform-Analysis/" target="_blank" class="project-link">
+                                <i class="fas fa-chart-line"></i> Live Dashboard
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-content">
+                        <span class="project-meta">EDA • Python • CLTV Modeling</span>
+                        <h3>Customer Profitability Intelligence</h3>
+                        <p>Understanding What Drives Customer Profitability based on LTV uncovering 10% higher revenue potential.</p>
+                        <div class="project-impact">
+                            <small>Business Value</small>
+                            <strong>High-LTV segments identified with optimized acquisition strategy</strong>
+                        </div>
+                        <div class="project-links">
+                            <a href="https://github.com/akashbondre39/Customer-Profitability-Analysis---Understanding-What-Drives-Customer-Profitability" target="_blank" class="project-link">
+                                <i class="fab fa-github"></i> Code Repository
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-content">
+                        <span class="project-meta">Supply Chain • Logistics • Power BI</span>
+                        <h3>D2C Supply Chain Optimization</h3>
+                        <p>End-to-end supply chain analytics reducing stockout incidents and improving delivery SLA compliance through inventory management.</p>
+                        <div class="project-impact">
+                            <small>Operational Excellence</small>
+                            <strong>Enhanced delivery performance with data-driven routing</strong>
+                        </div>
+                        <div class="project-links">
+                            <a href="https://akashbondre39.github.io/Supply-Chain-Management---Logistics-and-Management/" target="_blank" class="project-link">
+                                <i class="fas fa-chart-line"></i> View Insights
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-content">
+                        <span class="project-meta">Market Intelligence • Power BI</span>
+                        <h3>Decoding Smartphone Market</h3>
+                        <p>Competitive landscape analysis revealing sales trends, regional patterns, and customer behavior insights in the smartphone sector.</p>
+                        <div class="project-impact">
+                            <small>Market Insight</small>
+                            <strong>Emerging regional opportunity zones identified</strong>
+                        </div>
+                        <div class="project-links">
+                            <a href="https://akashbondre39.github.io/Decoding-the-Smartphone-Market-Sales-Trends-Customer-Insights/" target="_blank" class="project-link">
+                                <i class="fas fa-chart-pie"></i> Interactive Report
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-content">
+                        <span class="project-meta">Risk Modeling • SQL • Power BI</span>
+                        <h3>Credit Risk Analysis</h3>
+                        <p>Deep dive into Customer Risk and Transactional Analysis to mitigate financial exposure.</p>
+                        <div class="project-impact">
+                            <small>Performance Gain</small>
+                            <strong>15% improvement in high-risk detection vs baseline models</strong>
+                        </div>
+                        <div class="project-links">
+                            <a href="https://akashbondre39.github.io/Customer-Risk-and-Transactional-Analysis/" target="_blank" class="project-link">
+                                <i class="fas fa-chart-bar"></i> Live Dashboard
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-content">
+                        <span class="project-meta">Python • Marketing Analytics</span>
+                        <h3>Marketing ROI Optimization</h3>
+                        <p>Credit card acquisition campaign analysis driving CAC reduction through channel attribution and customer segmentation modeling.</p>
+                        <div class="project-impact">
+                            <small>Impact Delivered</small>
+                            <strong>Maximized ad spend efficiency with data-driven allocation</strong>
+                        </div>
+                        <div class="project-links">
+                            <a href="https://github.com/akashbondre39/Marketing-Effectiveness-and-ROI-Optimization-for-Consumer-Credit-Card-Acquisition-and-Engagement" target="_blank" class="project-link">
+                                <i class="fab fa-github"></i> View Analysis
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="contact">
+            <div class="section-header">
+                <span class="section-tag">// Collaboration Gateway</span>
+            </div>
+            <div class="contact-grid">
+                <div class="contact-info">
+                    <h2>Let's Build Something <span class="gradient-text">Exceptional</span></h2>
+                    <p>Open to high-impact data analytics, product intelligence, and strategic analytics roles. Let's discuss how data can drive your next competitive advantage.</p>
+                    
+                    <div class="social-links">
+                        <a href="https://www.linkedin.com/in/akashbondre27" target="_blank" class="social-link" title="LinkedIn">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="https://github.com/akashbondre39" target="_blank" class="social-link" title="GitHub">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="mailto:akashbondre39@gmail.com" class="social-link" title="Email">
+                            <i class="fas fa-envelope"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <form>
+                    <input type="text" placeholder="Your Name" required>
+                    <input type="email" placeholder="Email Address" required>
+                    <textarea placeholder="Tell me about your project or opportunity..." rows="5" required></textarea>
+                    <button type="submit" class="btn-primary" style="width: 100%; justify-content: center;">
+                        <i class="fas fa-paper-plane"></i>
+                        Send Message
+                    </button>
+                </form>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>© 2025 AKASH BONDRE • DATA ANALYST • ALL RIGHTS RESERVED</p>
+    </footer>
+
+    <script>
+        // Custom Cursor
+        const cursor = document.getElementById('cursor');
+        const follower = document.getElementById('cursor-follower');
+        
+        let mouseX = 0, mouseY = 0;
+        let followerX = 0, followerY = 0;
+        
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            
+            cursor.style.left = mouseX + 'px';
+            cursor.style.top = mouseY + 'px';
+        });
+
+        function animateFollower() {
+            followerX += (mouseX - followerX) * 0.1;
+            followerY += (mouseY - followerY) * 0.1;
+            
+            follower.style.left = (followerX - 20) + 'px';
+            follower.style.top = (followerY - 20) + 'px';
+            
+            requestAnimationFrame(animateFollower);
+        }
+        animateFollower();
+
+        // Hover Effects
+        document.querySelectorAll('a, button, .project-card, .skill-card, .cert-item').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursor.style.transform = 'scale(1.5)';
+                follower.style.transform = 'scale(1.8)';
+                follower.style.borderColor = 'var(--accent-secondary)';
+            });
+            el.addEventListener('mouseleave', () => {
+                cursor.style.transform = 'scale(1)';
+                follower.style.transform = 'scale(1)';
+                follower.style.borderColor = 'var(--accent-primary)';
+            });
+        });
+
+        // Scroll Reveal Animation
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('section').forEach(section => {
+            observer.observe(section);
+        });
+
+        // Counter Animation
+        const counters = document.querySelectorAll('.counter');
+        const counterObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const target = +entry.target.getAttribute('data-target');
+                    const duration = 2000;
+                    const increment = target / (duration / 16);
+                    let current = 0;
+                    
+                    const updateCounter = () => {
+                        current += increment;
+                        if (current < target) {
+                            entry.target.innerText = Math.floor(current);
+                            requestAnimationFrame(updateCounter);
+                        } else {
+                            entry.target.innerText = target;
+                        }
+                    };
+                    
+                    updateCounter();
+                    counterObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        counters.forEach(counter => counterObserver.observe(counter));
+
+        // Smooth Scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Form Submission
+        document.querySelector('form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('Thank you for reaching out! I will get back to you soon.');
+            e.target.reset();
+        });
+
+        // --- TOP TIER: STRUCTURED HEXAGONAL DATA LATTICE ---
+        const navCanvas = document.getElementById('nav-canvas');
+        const ctx = navCanvas.getContext('2d');
+        
+        let width, height;
+        let hexRadius = 25; // Size of hexagons
+        let hexHeight, hexWidth;
+        let columns, rows;
+        let mouse = { x: -1000, y: -1000 };
+        let time = 0;
+
+        // Colors
+        const colorPrimary = { r: 0, g: 240, b: 255 }; // Cyan
+        const colorSecondary = { r: 107, g: 0, b: 255 }; // Purple
+
+        function resize() {
+            if(navCanvas.parentElement) {
+                width = navCanvas.width = navCanvas.parentElement.offsetWidth;
+                height = navCanvas.height = navCanvas.parentElement.offsetHeight;
+                
+                // Hexagon Math
+                hexHeight = Math.sin(Math.PI / 3) * hexRadius;
+                hexWidth = hexRadius; // spacing
+                
+                columns = Math.ceil(width / (hexRadius * 1.5)) + 2;
+                rows = Math.ceil(height / (hexHeight * 2)) + 2;
+            }
+        }
+        
+        window.addEventListener('resize', resize);
+        navCanvas.addEventListener('mousemove', (e) => {
+            const rect = navCanvas.getBoundingClientRect();
+            mouse.x = e.clientX - rect.left;
+            mouse.y = e.clientY - rect.top;
+        });
+        navCanvas.addEventListener('mouseleave', () => {
+             mouse.x = -1000;
+             mouse.y = -1000;
+        });
+
+        resize();
+
+        // Draw Single Hexagon
+        function drawHexagon(x, y, r) {
+            ctx.beginPath();
+            for (let i = 0; i < 6; i++) {
+                ctx.lineTo(x + r * Math.cos(i * Math.PI / 3), y + r * Math.sin(i * Math.PI / 3));
+            }
+            ctx.closePath();
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            time += 0.02; // Global time for pulsing
+
+            // Draw Grid
+            for (let col = 0; col < columns; col++) {
+                for (let row = 0; row < rows; row++) {
+                    // Offset odd columns
+                    let x = col * (hexRadius * 1.5);
+                    let y = row * (hexHeight * 2) + (col % 2) * hexHeight;
+
+                    // Calculate distance to mouse
+                    const dist = Math.hypot(x - mouse.x, y - mouse.y);
+                    const maxDist = 200; // Radius of mouse influence
+
+                    // Base Opacity (Very faint structure)
+                    let opacity = 0.05;
+                    let lineWidth = 1;
+                    let color = `rgba(${colorPrimary.r}, ${colorPrimary.g}, ${colorPrimary.b}, ${opacity})`;
+
+                    // Interactive Glow (Mouse)
+                    if (dist < maxDist) {
+                        const intensity = 1 - (dist / maxDist);
+                        opacity = 0.05 + (intensity * 0.4);
+                        lineWidth = 1 + (intensity * 1.5);
+                        // Blend towards purple near mouse
+                        color = `rgba(
+                            ${colorPrimary.r * (1-intensity) + colorSecondary.r * intensity}, 
+                            ${colorPrimary.g * (1-intensity) + colorSecondary.g * intensity}, 
+                            ${colorPrimary.b * (1-intensity) + colorSecondary.b * intensity}, 
+                            ${opacity})`;
+                    }
+
+                    // Automated "Data Pulse" Wave (Left to Right)
+                    // Creates a scan line effect
+                    const waveX = (time * 100) % (width + 500); 
+                    const distToWave = Math.abs(x - waveX + 250); // +250 to start off screen
+                    if(distToWave < 100) {
+                        const waveIntensity = 1 - (distToWave / 100);
+                        opacity += waveIntensity * 0.2; // Add to existing opacity
+                        color = `rgba(${colorPrimary.r}, ${colorPrimary.g}, ${colorPrimary.b}, ${opacity})`;
+                    }
+
+                    drawHexagon(x, y, hexRadius);
+                    ctx.strokeStyle = color;
+                    ctx.lineWidth = lineWidth;
+                    ctx.stroke();
+
+                    // Optional: Fill hex if really close to mouse (Active Cell)
+                    if (dist < 40) {
+                        ctx.fillStyle = `rgba(${colorPrimary.r}, ${colorPrimary.g}, ${colorPrimary.b}, 0.1)`;
+                        ctx.fill();
+                    }
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+
+        // --- VISITOR TRACKING SCRIPT ---
+        const counterNamespace = 'akashbondre-portfolio'; 
+        const counterKey = 'unique-visits';
+
+        async function trackVisit() {
+            const hasVisited = localStorage.getItem('hasVisitedPortfolio');
+            if (!hasVisited) {
+                try {
+                    await fetch(`https://api.counterapi.dev/v1/${counterNamespace}/${counterKey}/up`);
+                    localStorage.setItem('hasVisitedPortfolio', 'true');
+                    console.log('New unique visit logged.'); 
+                } catch (error) {
+                    console.error('Tracking error:', error);
+                }
+            }
+        }
+        trackVisit();
+
+    </script>
+</body>
+</html>
