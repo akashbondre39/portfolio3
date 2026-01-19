@@ -1458,90 +1458,12 @@
             requestAnimationFrame(animate);
         }
         animate();
-
-
-// --- ADVANCED VISITOR TRACKING & INTELLIGENCE ---
         
-        // CONFIGURATION
-        const TRACKING_CONFIG = {
-            namespace: 'akashbondre-portfolio2',
-            key: 'unique-visits',
-            // Your Google Sheet Web App URL:
-            googleSheetUrl: 'https://script.google.com/macros/s/AKfycbw_AQB_jYA_SU_1CCHv3GlJ8k5Uk83z3Woed7wkdMtxiFKnORJzHyR1ODziEQjIq2wP/exec' 
-        };
-
-        // HELPER: Get Visitor Fingerprint (Location, ISP, Device)
-        async function getVisitorIntelligence() {
-            try {
-                // Free IP Geolocation API
-                const response = await fetch('https://ipapi.co/json/');
-                const data = await response.json();
-                
-                return {
-                    ip: data.ip || 'Unknown',
-                    city: data.city || 'Unknown',
-                    country: data.country_name || 'Unknown',
-                    org: data.org || 'Unknown (ISP)', // This reveals the Company Name
-                    device: navigator.userAgent,
-                    screen: `${window.screen.width}x${window.screen.height}`,
-                    timestamp: new Date().toISOString()
-                };
-            } catch (error) {
-                console.warn('Intelligence gathering failed:', error);
-                return {
-                    ip: 'Error',
-                    city: 'Unknown',
-                    country: 'Unknown',
-                    org: 'Unknown',
-                    device: navigator.userAgent,
-                    screen: `${window.screen.width}x${window.screen.height}`,
-                    timestamp: new Date().toISOString()
-                };
-            }
-        }
-
-        // MAIN TRACKING FUNCTION
-        async function trackVisit() {
-            const hasVisited = localStorage.getItem('hasVisitedPortfolio');
-            
-            // 1. Gather intelligence
-            const visitorProfile = await getVisitorIntelligence();
-            
-            if (visitorProfile) {
-                console.log('🕵️ Visitor Identified:', visitorProfile);
-                
-                // 2. Send to Google Sheet
-                try {
-                    fetch(TRACKING_CONFIG.googleSheetUrl, {
-                        method: 'POST',
-                        mode: 'no-cors',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(visitorProfile)
-                    });
-                } catch (e) {
-                    console.error('Google Sheet Error:', e);
-                }
-            }
-
-            // 3. Increment Public Counter (Only for new unique visitors)
-            if (!hasVisited) {
-                try {
-                    await fetch(`https://api.counterapi.dev/v1/${TRACKING_CONFIG.namespace}/${TRACKING_CONFIG.key}/up`);
-                    localStorage.setItem('hasVisitedPortfolio', 'true');
-                    console.log('🚀 New unique visit counted!');
-                } catch (error) {
-                    console.error('Counter error:', error);
-                }
-            }
-        }
-
-        // Initialize
-        trackVisit();
-
     </script>
 </body>
 
 </html>
+
 
 
 
